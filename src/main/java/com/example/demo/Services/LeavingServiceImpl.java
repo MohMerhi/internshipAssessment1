@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +64,7 @@ public class LeavingServiceImpl implements LeavingService{
     }
 
     @Override
-    public List<LeavingDTO> getLeavingByEmployeeAndDatesBetween(int employeeId, Date startDate, Date endDate) {
+    public List<LeavingDTO> getLeavingByEmployeeAndDatesBetween(int employeeId, LocalDate startDate, LocalDate endDate) {
         return leavingRepository.findByEmployeeIdAndStartDateBetween(employeeId,startDate,endDate)
                 .stream()
                 .map(leavingMapper::toLeavingDTO)

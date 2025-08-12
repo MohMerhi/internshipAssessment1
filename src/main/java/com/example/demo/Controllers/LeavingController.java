@@ -4,8 +4,14 @@ import com.example.demo.DTOs.LeavingDTO;
 import com.example.demo.Repositories.LeavingRepository;
 import com.example.demo.Services.LeavingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +48,19 @@ public class LeavingController {
         leavingService.deleteLeaving(id);
     }
 
+    @PostMapping("/employee/{id}/in-range")
+    public List<LeavingDTO> inRangeLeaving(@PathVariable int id, @RequestBody Map<String,Object> leavingDTOmap) throws ParseException {
+        Object from = leavingDTOmap.get("from");
+        Object to = leavingDTOmap.get("to");
+        if(from != null && to != null) {
+            LocalDate fromDate = LocalDate.parse(from.toString(), DateTimeFormatter.ISO_LOCAL_DATE);
+            LocalDate toDate = LocalDate.parse(to.toString(), DateTimeFormatter.ISO_LOCAL_DATE);
+            return leavingService.getLeavingByEmployeeAndDatesBetween(id, fromDate, toDate);
+        }
+        else{
+            throw new RuntimeException("missing one or both dates");
+        }
+    }
 
 
 }

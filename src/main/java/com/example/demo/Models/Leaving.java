@@ -20,7 +20,7 @@ public class Leaving {
 
     @NotNull
     @Column(name = "leave_type_id", nullable = false)
-    private Integer leave_type_id;
+    private Integer leaveTypeId;
 
     @NotNull
     @Column(name = "start_date", nullable = false)

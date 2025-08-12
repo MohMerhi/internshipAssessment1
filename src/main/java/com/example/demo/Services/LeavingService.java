@@ -4,6 +4,7 @@ import com.example.demo.DTOs.LeavingDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,6 @@ public interface LeavingService {
     void updateLeaving(Map<String,Object> leavingDTO, int id);
     void deleteLeaving(int id);
     Page<LeavingDTO> getLeavingByEmployeeId(int id, int page, int size);
-    List<LeavingDTO> getLeavingByEmployeeAndDatesBetween(int employeeId, Date startDate, Date endDate);
+    List<LeavingDTO> getLeavingByEmployeeAndDatesBetween(int employeeId, LocalDate startDate, LocalDate endDate);
     Page<LeavingDTO> getLeavingByLeaveType(String leaveType, int page, int size);
 }

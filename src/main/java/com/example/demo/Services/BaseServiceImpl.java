@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -29,6 +31,10 @@ public class BaseServiceImpl implements BaseService {
                 v = BigDecimal.valueOf(((Integer) v).intValue());
             if (field != null && field.getType().equals(BigDecimal.class) && v instanceof Double)
                 v = BigDecimal.valueOf(((Double) v).doubleValue());
+            if (field.getType().equals(LocalDate.class) && v instanceof String) {
+                v = LocalDate.parse((String) v, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            }
+
             if (k.equals("suffix") && v != null) {
                 v = v + "";
             }
