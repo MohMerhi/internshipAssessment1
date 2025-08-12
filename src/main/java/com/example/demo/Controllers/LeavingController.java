@@ -5,6 +5,8 @@ import com.example.demo.Repositories.LeavingRepository;
 import com.example.demo.Services.LeavingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -60,6 +62,20 @@ public class LeavingController {
         else{
             throw new RuntimeException("missing one or both dates");
         }
+    }
+
+    @PostMapping("/leaveType/{typeId}")
+    public Page<LeavingDTO> leavingByLeaveType(@PathVariable int typeId, @RequestBody Map<String,Object> pageMap) throws ParseException {
+        Integer pageNumber = Integer.parseInt(pageMap.getOrDefault("pageNumber",0).toString());
+        Integer pageSize = Integer.parseInt(pageMap.getOrDefault("pageSize",10).toString());
+        return leavingService.getLeavingByLeaveType(typeId,pageNumber,pageSize);
+    }
+
+    @PostMapping("/employee/{employeeId}")
+    public Page<LeavingDTO> leavingByEmployee(@PathVariable int employeeId, @RequestBody Map<String,Object> pageMap) throws ParseException {
+        Integer pageNumber = Integer.parseInt(pageMap.getOrDefault("pageNumber",0).toString());
+        Integer pageSize = Integer.parseInt(pageMap.getOrDefault("pageSize",10).toString());
+        return leavingService.getLeavingByEmployeeId(employeeId,pageNumber,pageSize);
     }
 
 

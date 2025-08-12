@@ -72,9 +72,9 @@ public class LeavingServiceImpl implements LeavingService{
     }
 
     @Override
-    public Page<LeavingDTO> getLeavingByLeaveType(String leaveType, int page, int size) {
+    public Page<LeavingDTO> getLeavingByLeaveType(int leaveType, int page, int size) {
         Pageable pageable =  PageRequest.of(page, size);
-        return leavingRepository.findByLeaveType(leaveType, pageable)
+        return leavingRepository.findByLeaveTypeId(leaveType, pageable)
                 .map(leavingMapper::toLeavingDTO);
 
     }

@@ -17,5 +17,5 @@ public interface LeavingService {
     void deleteLeaving(int id);
     Page<LeavingDTO> getLeavingByEmployeeId(int id, int page, int size);
     List<LeavingDTO> getLeavingByEmployeeAndDatesBetween(int employeeId, LocalDate startDate, LocalDate endDate);
-    Page<LeavingDTO> getLeavingByLeaveType(String leaveType, int page, int size);
+    Page<LeavingDTO> getLeavingByLeaveType(int leaveType, int page, int size);
 }
