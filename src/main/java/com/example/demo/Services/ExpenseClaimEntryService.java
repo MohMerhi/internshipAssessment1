@@ -1,7 +1,9 @@
 package com.example.demo.Services;
 
 import com.example.demo.DTOs.ExpenseClaimEntryDTO;
+import com.example.demo.Models.ExpenseClaimEntry;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,4 +13,5 @@ public interface ExpenseClaimEntryService {
     int createExpenseClaimEntry(Map<String,Object> expenseClaimEntryDTOmap);
     void updateExpenseClaimEntry(Map<String,Object> expenseClaimEntryDTO, int id);
     void deleteExpenseClaimEntry(int id);
+    public void allExpenseClaimEntriesCreation(List<LinkedHashMap<String, Object>> entries, int expenseClaimId);
 }

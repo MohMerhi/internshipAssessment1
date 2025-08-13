@@ -18,8 +18,12 @@ public class BaseServiceImpl implements BaseService {
         entityDTO.remove("createdBy");
         // Map key is field name, v is value
         entityDTO.forEach((k, v) -> {
+
             // use reflection to get field k on entityToUpdate and set it to value k
             Field field = ReflectionUtils.findField(entityToUpdateClass, k);
+            if(field == null){
+                return;
+            }
             // convert value from type integer to type Long if the field is Long type
             if (field != null && field.getType().equals(Long.class) && v instanceof Integer)
                 v = ((Integer) v).longValue();
