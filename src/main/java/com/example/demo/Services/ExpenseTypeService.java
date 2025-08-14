@@ -11,4 +11,5 @@ public interface ExpenseTypeService {
     int createExpenseType(Map<String,Object> expenseTypeDTOmap);
     void updateExpenseType(Map<String,Object> expenseTypeDTO, int id);
     void deleteExpenseType(int id);
+    Integer findExpenseTypeByName(String expenseTypeName);
 }

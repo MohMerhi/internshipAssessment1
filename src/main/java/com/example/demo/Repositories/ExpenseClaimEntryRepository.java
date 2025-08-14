@@ -14,8 +14,9 @@ public interface ExpenseClaimEntryRepository extends JpaRepository<ExpenseClaimE
     BigDecimal getTotalExpenseClaim(@Param("expenseclaimid") int expenseclaimid);
 
     @Modifying
-    @Query("update ExpenseClaim ec set ec.total = :total where id = :id")
+    @Query("update ExpenseClaim ec set ec.total = :total where ec.id = :id")
     int updateTotalExpenseClaim(@Param("id") int id, @Param("total") BigDecimal total);
 
-
+    @Query("Select ece from ExpenseClaimEntry ece Join ExpenseClaim ec ON ece.expenseClaimId = ec.id where ec.employeeId = :employeeId and ece.expenseTypeId = :expenseTypeId")
+    List<ExpenseClaimEntry> findAllClaimEntriesByEmployeeIdAndType(Integer employeeId, Integer expenseTypeId);
 }

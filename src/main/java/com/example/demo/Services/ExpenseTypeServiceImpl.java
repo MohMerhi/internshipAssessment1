@@ -5,6 +5,7 @@ import com.example.demo.DTOs.ExpenseTypeDTO;
 import com.example.demo.DTOs.ExpenseTypeMapper;
 import com.example.demo.Models.ExpenseType;
 import com.example.demo.Repositories.ExpenseTypeRepository;
+import com.example.demo.Repositories.LeaveTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class ExpenseTypeServiceImpl implements ExpenseTypeService{
     private final ExpenseTypeRepository expenseTypeRepository;
     private final ExpenseTypeMapper expenseTypeMapper;
     private final BaseService baseService;
+    private final LeaveTypeRepository leaveTypeRepository;
 
     public List<ExpenseTypeDTO> getAllExpenseTypes() {
         return expenseTypeRepository.findAll()
@@ -49,6 +51,11 @@ public class ExpenseTypeServiceImpl implements ExpenseTypeService{
     }
     public void deleteExpenseType(int id) {
         expenseTypeRepository.deleteById(id);
+    }
+
+    @Override
+    public Integer findExpenseTypeByName(String expenseTypeName) {
+        return expenseTypeRepository.findIdByName(expenseTypeName);
     }
 
 

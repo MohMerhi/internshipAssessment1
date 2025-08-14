@@ -6,6 +6,7 @@ import com.example.demo.DTOs.ExpenseClaimEntryMapper;
 import com.example.demo.Models.ExpenseClaimEntry;
 import com.example.demo.Repositories.ExpenseClaimEntryRepository;
 import com.example.demo.Repositories.ExpenseClaimRepository;
+import com.example.demo.Repositories.ExpenseTypeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -26,6 +27,7 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
     private final ExpenseClaimEntryMapper expenseClaimEntryMapper;
     private final BaseService baseService;
     private final ExpenseClaimRepository expenseClaimRepository;
+    private final ExpenseTypeRepository expenseTypeRepository;
 
     public List<ExpenseClaimEntryDTO> getAllExpenseClaimEntrys() {
         return expenseClaimEntryRepository.findAll()
@@ -67,6 +69,9 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
         List<ExpenseClaimEntry> expenseClaimEntries = new ArrayList<>();
         for(LinkedHashMap<String, Object> entry : entries) {
             ExpenseClaimEntry expenseClaimEntry = new ExpenseClaimEntry();
+            String leaveTypeName =  String.valueOf(entry.get("typeName"));
+            entry.remove("typeName");
+            entry.put("expenseTypeId", expenseTypeRepository.findIdByName(leaveTypeName));
             baseService.updateEntity(entry,expenseClaimEntry,ExpenseClaimEntry.class);
             expenseClaimEntry.setId(null);
             expenseClaimEntry.setExpenseClaimId(expenseClaimId);
@@ -79,6 +84,12 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
         expenseClaimEntryRepository.updateTotalExpenseClaim(expenseClaimId, total);
     }
 
+    public List<ExpenseClaimEntryDTO> findByEmployeeAndByType(Integer employeeId, Integer typeId){
+        return expenseClaimEntryRepository.findAllClaimEntriesByEmployeeIdAndType(employeeId, typeId)
+                .stream()
+                .map(expenseClaimEntryMapper::toExpenseClaimEntryDTO)
+                .collect(Collectors.toList());
+    }
 
 
 

@@ -42,6 +42,12 @@ public class ExpenseClaimEntryController {
         expenseClaimEntryService.deleteExpenseClaimEntry(id);
     }
 
+    @PostMapping ("/type/employee")
+    public List<ExpenseClaimEntryDTO> getExpenseClaimEntryByEmployeeAndType(@RequestBody Map<String,Object> expenseClaimEntryDTOmap) {
+        Integer employeeId = (Integer) expenseClaimEntryDTOmap.get("employeeId");
+        Integer typeId = (Integer) expenseClaimEntryDTOmap.get("typeId");
+        return expenseClaimEntryService.findByEmployeeAndByType(employeeId,typeId);
+    }
 
 
 }
