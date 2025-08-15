@@ -1,6 +1,7 @@
 package com.example.demo.Models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class Department {
 
     @Size(max = 255)
     @NotNull
+    @NotBlank(message = "name must not be empty")
     @Column(name = "name", nullable = false)
     private String name;
 

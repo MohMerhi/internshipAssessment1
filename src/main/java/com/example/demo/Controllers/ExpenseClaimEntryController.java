@@ -1,6 +1,7 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.DTOs.ExpenseClaimEntryDTO;
+import com.example.demo.DTOs.TypeSumDTO;
 import com.example.demo.Repositories.ExpenseClaimEntryRepository;
 import com.example.demo.Services.ExpenseClaimEntryService;
 import lombok.RequiredArgsConstructor;
@@ -49,5 +50,14 @@ public class ExpenseClaimEntryController {
         return expenseClaimEntryService.findByEmployeeAndByType(employeeId,typeId);
     }
 
+    @GetMapping("/sum-by-type")
+    public List<TypeSumDTO> getSumByType(){
+        return expenseClaimEntryService.findTypeSumByAllTypes();
+    }
+
+//    @GetMapping("/employee/{employeeId}")
+//    public List<ExpenseClaimEntryDTO> getExpenseClaimEntryByEmployeeId(@PathVariable int employeeId) {
+//        return expenseClaimEntryService.findByEmployeeId(employeeId);
+//    }
 
 }

@@ -1,5 +1,6 @@
 package com.example.demo.Services;
 
+import com.example.demo.exceptions.InvalidRequestDataException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -7,6 +8,8 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -36,7 +39,7 @@ public class BaseServiceImpl implements BaseService {
             if (field != null && field.getType().equals(BigDecimal.class) && v instanceof Double)
                 v = BigDecimal.valueOf(((Double) v).doubleValue());
             if (field.getType().equals(LocalDate.class) && v instanceof String) {
-                v = LocalDate.parse((String) v, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                v = LocalDate.parse((String) v, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
             }
 
             if (k.equals("suffix") && v != null) {
@@ -51,4 +54,25 @@ public class BaseServiceImpl implements BaseService {
             ReflectionUtils.setField(field, entityToUpdate, v);
         });
     }
+    public void validateDataTypes(Map<String, Object> data, String[] requiredDataFromRequest, Class<?>[] dataTypes) {
+        List<String> errors = new ArrayList<>();
+
+        for(int i = 0; i < requiredDataFromRequest.length; i++){
+            if(!data.containsKey(requiredDataFromRequest[i])){
+                errors.add("Required field " + requiredDataFromRequest[i] + "is missing");
+            }
+            else if(data.get(requiredDataFromRequest[i]) == null){
+                    errors.add(requiredDataFromRequest[i] + " cannot be null");
+            }
+            else if(data.get(requiredDataFromRequest[i]).getClass().equals(dataTypes[i])){
+                errors.add(requiredDataFromRequest[i] + " cannot be of type " + dataTypes[i].getName());
+            }
+        }
+
+        // If any errors were found, throw our custom exception
+        if (!errors.isEmpty()) {
+            throw new InvalidRequestDataException("Request contains invalid data.", errors);
+        }
+    }
+
 }

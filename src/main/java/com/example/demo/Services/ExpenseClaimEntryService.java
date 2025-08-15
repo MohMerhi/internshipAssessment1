@@ -1,6 +1,7 @@
 package com.example.demo.Services;
 
 import com.example.demo.DTOs.ExpenseClaimEntryDTO;
+import com.example.demo.DTOs.TypeSumDTO;
 import com.example.demo.Models.ExpenseClaimEntry;
 
 import java.util.LinkedHashMap;
@@ -15,4 +16,6 @@ public interface ExpenseClaimEntryService {
     void deleteExpenseClaimEntry(int id);
     void allExpenseClaimEntriesCreation(List<LinkedHashMap<String, Object>> entries, int expenseClaimId);
     List<ExpenseClaimEntryDTO> findByEmployeeAndByType(Integer employeeId, Integer typeId);
+//    List<ExpenseClaimEntryDTO> findByEmployeeId(Integer employeeId);
+    List<TypeSumDTO> findTypeSumByAllTypes();
 }

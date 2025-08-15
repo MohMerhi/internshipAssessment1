@@ -1,6 +1,7 @@
 package com.example.demo.Models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -17,7 +18,7 @@ public class LeaveType {
     private Integer id;
 
     @Size(max = 255)
-    @NotNull
+    @NotBlank(message = "name must be valid")
     @Column(name = "name", nullable = false)
     private String name;
 

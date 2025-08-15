@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 import com.example.demo.DTOs.EmployeeDTO;
 import com.example.demo.Repositories.EmployeeRepository;
 import com.example.demo.Services.EmployeeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

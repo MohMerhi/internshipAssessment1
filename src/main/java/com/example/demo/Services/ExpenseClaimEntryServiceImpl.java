@@ -3,6 +3,7 @@ package com.example.demo.Services;
 
 import com.example.demo.DTOs.ExpenseClaimEntryDTO;
 import com.example.demo.DTOs.ExpenseClaimEntryMapper;
+import com.example.demo.DTOs.TypeSumDTO;
 import com.example.demo.Models.ExpenseClaimEntry;
 import com.example.demo.Repositories.ExpenseClaimEntryRepository;
 import com.example.demo.Repositories.ExpenseClaimRepository;
@@ -69,9 +70,6 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
         List<ExpenseClaimEntry> expenseClaimEntries = new ArrayList<>();
         for(LinkedHashMap<String, Object> entry : entries) {
             ExpenseClaimEntry expenseClaimEntry = new ExpenseClaimEntry();
-            String leaveTypeName =  String.valueOf(entry.get("typeName"));
-            entry.remove("typeName");
-            entry.put("expenseTypeId", expenseTypeRepository.findIdByName(leaveTypeName));
             baseService.updateEntity(entry,expenseClaimEntry,ExpenseClaimEntry.class);
             expenseClaimEntry.setId(null);
             expenseClaimEntry.setExpenseClaimId(expenseClaimId);
@@ -90,6 +88,20 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
                 .map(expenseClaimEntryMapper::toExpenseClaimEntryDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<TypeSumDTO> findTypeSumByAllTypes() {
+        return expenseClaimEntryRepository.getTotalGroupedByType();
+    }
+
+//    @Override
+//    public List<ExpenseClaimEntryDTO> findByEmployeeId(Integer employeeId) {
+//        return expenseClaimEntryRepository.findAllByEmployeeId(employeeId)
+//                .stream()
+//                .map(expenseClaimEntryMapper::toExpenseClaimEntryDTO)
+//                .collect(Collectors.toList());
+//    }
+
 
 
 

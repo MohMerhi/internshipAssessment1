@@ -65,7 +65,20 @@ public class LeavingServiceImpl implements LeavingService{
 
     @Override
     public List<LeavingDTO> getLeavingByEmployeeAndDatesBetween(int employeeId, LocalDate startDate, LocalDate endDate) {
-        return leavingRepository.findByEmployeeIdAndStartDateBetween(employeeId,startDate,endDate)
+        List<Leaving> leavingList = null;
+        if(startDate == null && endDate == null) {
+            leavingList = leavingRepository.findByEmployeeId(employeeId);
+        }
+        else if(startDate == null){
+            leavingList = leavingRepository.findByEmployeeIdAndStartDateBefore(employeeId,endDate);
+        }
+        else if (endDate == null){
+            leavingList = leavingRepository.findByEmployeeIdAndStartDateAfter(employeeId, startDate);
+        }
+        else{
+            leavingList = leavingRepository.findByEmployeeIdAndStartDateBetween(employeeId,startDate,endDate);
+        }
+        return  leavingList
                 .stream()
                 .map(leavingMapper::toLeavingDTO)
                 .collect(Collectors.toList());

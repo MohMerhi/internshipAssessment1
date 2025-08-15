@@ -54,14 +54,16 @@ public class LeavingController {
     public List<LeavingDTO> inRangeLeaving(@PathVariable int id, @RequestBody Map<String,Object> leavingDTOmap) throws ParseException {
         Object from = leavingDTOmap.get("from");
         Object to = leavingDTOmap.get("to");
-        if(from != null && to != null) {
-            LocalDate fromDate = LocalDate.parse(from.toString(), DateTimeFormatter.ISO_LOCAL_DATE);
-            LocalDate toDate = LocalDate.parse(to.toString(), DateTimeFormatter.ISO_LOCAL_DATE);
-            return leavingService.getLeavingByEmployeeAndDatesBetween(id, fromDate, toDate);
+        LocalDate fromDate = null, toDate = null;
+        if(from != null)
+        {
+            fromDate = LocalDate.parse(from.toString(), DateTimeFormatter.ISO_LOCAL_DATE);
         }
-        else{
-            throw new RuntimeException("missing one or both dates");
+        if(to != null)
+        {
+            toDate = LocalDate.parse(to.toString(), DateTimeFormatter.ISO_LOCAL_DATE);
         }
+        return leavingService.getLeavingByEmployeeAndDatesBetween(id, fromDate, toDate);
     }
 
     @PostMapping("/leaveType/{typeId}")
