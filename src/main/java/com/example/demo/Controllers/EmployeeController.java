@@ -44,8 +44,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/department/{department}")
-    public List<EmployeeDTO> getEmployeeDepartment(@PathVariable String department) {
-        return employeeService.getEmployeesByDepartmentName(department);
+    public List<EmployeeDTO> getEmployeeDepartment(@PathVariable int department) {
+        return employeeService.getEmployeesByDepartmentId(department);
     }
 
 

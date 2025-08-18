@@ -15,7 +15,7 @@ public interface LeavingService {
     int createLeaving(Map<String,Object> leavingDTOmap);
     void updateLeaving(Map<String,Object> leavingDTO, int id);
     void deleteLeaving(int id);
-    Page<LeavingDTO> getLeavingByEmployeeId(int id, int page, int size);
-    List<LeavingDTO> getLeavingByEmployeeAndDatesBetween(int employeeId, LocalDate startDate, LocalDate endDate);
-    Page<LeavingDTO> getLeavingByLeaveType(int leaveType, int page, int size);
+    Page<LeavingDTO> getLeavingByEmployeeId(int id, Map<String,Object> pageMap);
+    List<LeavingDTO> getLeavingByEmployeeAndDatesBetween(int employeeId, Map<String,Object> leavingDTOmap);
+    Page<LeavingDTO> getLeavingByLeaveType(int leaveType, Map<String,Object> pageMap);
 }

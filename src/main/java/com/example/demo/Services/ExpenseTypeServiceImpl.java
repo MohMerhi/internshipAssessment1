@@ -6,10 +6,13 @@ import com.example.demo.DTOs.ExpenseTypeMapper;
 import com.example.demo.Models.ExpenseType;
 import com.example.demo.Repositories.ExpenseTypeRepository;
 import com.example.demo.Repositories.LeaveTypeRepository;
+import com.example.demo.exceptions.InvalidRequestDataException;
+import com.example.demo.exceptions.RequestValidations;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,6 +24,7 @@ public class ExpenseTypeServiceImpl implements ExpenseTypeService{
     private final ExpenseTypeMapper expenseTypeMapper;
     private final BaseService baseService;
     private final LeaveTypeRepository leaveTypeRepository;
+    private final RequestValidations requestValidations;
 
     public List<ExpenseTypeDTO> getAllExpenseTypes() {
         return expenseTypeRepository.findAll()
@@ -34,6 +38,11 @@ public class ExpenseTypeServiceImpl implements ExpenseTypeService{
         return expenseTypeMapper.toExpenseTypeDTO(expenseType);
     }
     public int createExpenseType(Map<String,Object> expenseTypeDTOmap) {
+        List<String> errors = new ArrayList<>();
+        requestValidations.validateName(expenseTypeDTOmap, errors, "name");
+        if(errors.size() > 0) {
+            throw new InvalidRequestDataException("Validation Error", errors);
+        }
         ExpenseType expenseType = new ExpenseType();
         baseService.updateEntity(expenseTypeDTOmap,expenseType,ExpenseType.class);
         if(expenseType.getId() != null && expenseTypeRepository.findById(expenseType.getId()).isPresent()) {
@@ -43,9 +52,14 @@ public class ExpenseTypeServiceImpl implements ExpenseTypeService{
         return expenseType.getId();
     }
     public void updateExpenseType(Map<String,Object> expenseTypeDTOmap, int id) {
+        List<String> errors = new ArrayList<>();
+        requestValidations.validateName(expenseTypeDTOmap, errors, "name");
+        if(errors.size() > 0) {
+            throw new InvalidRequestDataException("Validation Error", errors);
+        }
         ExpenseType expenseType = expenseTypeRepository.findById(id).orElseThrow(()->new RuntimeException("ExpenseType not found"));
         baseService.updateEntity(expenseTypeDTOmap,expenseType,ExpenseType.class);
-        expenseType.setId(id);
+        //expenseType.setId(id);
         expenseTypeRepository.save(expenseType);
 
     }

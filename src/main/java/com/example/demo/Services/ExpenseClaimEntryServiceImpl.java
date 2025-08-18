@@ -3,14 +3,16 @@ package com.example.demo.Services;
 
 import com.example.demo.DTOs.ExpenseClaimEntryDTO;
 import com.example.demo.DTOs.ExpenseClaimEntryMapper;
+import com.example.demo.DTOs.SumByEmployeeDTO;
 import com.example.demo.DTOs.TypeSumDTO;
 import com.example.demo.Models.ExpenseClaimEntry;
 import com.example.demo.Repositories.ExpenseClaimEntryRepository;
 import com.example.demo.Repositories.ExpenseClaimRepository;
 import com.example.demo.Repositories.ExpenseTypeRepository;
+import com.example.demo.exceptions.InvalidRequestDataException;
+import com.example.demo.exceptions.RequestValidations;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,8 +31,9 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
     private final BaseService baseService;
     private final ExpenseClaimRepository expenseClaimRepository;
     private final ExpenseTypeRepository expenseTypeRepository;
+    private final RequestValidations requestValidations;
 
-    public List<ExpenseClaimEntryDTO> getAllExpenseClaimEntrys() {
+    public List<ExpenseClaimEntryDTO> getAllExpenseClaimEntries() {
         return expenseClaimEntryRepository.findAll()
                 .stream()
                 .map(expenseClaimEntryMapper::toExpenseClaimEntryDTO)
@@ -42,6 +45,14 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
         return expenseClaimEntryMapper.toExpenseClaimEntryDTO(expenseClaimEntry);
     }
     public int createExpenseClaimEntry(Map<String,Object> expenseClaimEntryDTOmap) {
+        List<String> errors = new ArrayList<>();
+        requestValidations.validateDate(expenseClaimEntryDTOmap,"date",errors);
+        requestValidations.validatePositiveInteger(expenseClaimEntryDTOmap, "expenseTypeId", errors, false);
+        requestValidations.validatePositiveInteger(expenseClaimEntryDTOmap, "expenseClaimId", errors, false);
+        requestValidations.ValidatePositiveDouble(expenseClaimEntryDTOmap, "total", errors);
+        if(errors.size() > 0) {
+            throw new InvalidRequestDataException("Validation Error", errors);
+        }
         ExpenseClaimEntry expenseClaimEntry = new ExpenseClaimEntry();
         baseService.updateEntity(expenseClaimEntryDTOmap,expenseClaimEntry,ExpenseClaimEntry.class);
         expenseClaimEntry.setId(null);
@@ -51,13 +62,20 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
         return expenseClaimEntry.getId();
     }
     public void updateExpenseClaimEntry(Map<String,Object> expenseClaimEntryDTOmap, int id) {
+        List<String> errors = new ArrayList<>();
+        requestValidations.validateDate(expenseClaimEntryDTOmap,"date",errors);
+        requestValidations.validatePositiveInteger(expenseClaimEntryDTOmap, "expenseTypeId", errors, false);
+        requestValidations.validatePositiveInteger(expenseClaimEntryDTOmap, "expenseClaimId", errors, false);
+        requestValidations.ValidatePositiveDouble(expenseClaimEntryDTOmap, "total", errors);
+        if(errors.size() > 0) {
+            throw new InvalidRequestDataException("Validation Error", errors);
+        }
         ExpenseClaimEntry expenseClaimEntry = expenseClaimEntryRepository.findById(id).orElseThrow(()->new RuntimeException("ExpenseClaimEntry not found"));
         baseService.updateEntity(expenseClaimEntryDTOmap,expenseClaimEntry,ExpenseClaimEntry.class);
         expenseClaimEntry.setId(id);
         expenseClaimEntryRepository.save(expenseClaimEntry);
         BigDecimal total = expenseClaimEntryRepository.getTotalExpenseClaim(expenseClaimEntry.getExpenseClaimId());
         expenseClaimEntryRepository.updateTotalExpenseClaim(expenseClaimEntry.getExpenseClaimId(), total);
-
     }
     public void deleteExpenseClaimEntry(int id) {
         int expenseClaimId = expenseClaimEntryRepository.findById(id).get().getExpenseClaimId();
@@ -67,8 +85,15 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
     }
 
     public void allExpenseClaimEntriesCreation(List<LinkedHashMap<String, Object>> entries, int expenseClaimId){
+        List<String> errors = new ArrayList<>();
         List<ExpenseClaimEntry> expenseClaimEntries = new ArrayList<>();
         for(LinkedHashMap<String, Object> entry : entries) {
+            requestValidations.validateDate(entry,"date",errors);
+            requestValidations.validatePositiveInteger(entry, "expenseTypeId", errors, false);
+            requestValidations.ValidatePositiveDouble(entry, "total", errors);
+            if(errors.size() > 0) {
+                throw new InvalidRequestDataException("Validation Error", errors);
+            }
             ExpenseClaimEntry expenseClaimEntry = new ExpenseClaimEntry();
             baseService.updateEntity(entry,expenseClaimEntry,ExpenseClaimEntry.class);
             expenseClaimEntry.setId(null);
@@ -82,7 +107,15 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
         expenseClaimEntryRepository.updateTotalExpenseClaim(expenseClaimId, total);
     }
 
-    public List<ExpenseClaimEntryDTO> findByEmployeeAndByType(Integer employeeId, Integer typeId){
+    public List<ExpenseClaimEntryDTO> findByEmployeeAndByType(Map<String,Object> expenseClaimEntryDTOmap){
+        List<String> errors = new ArrayList<>();
+        requestValidations.validatePositiveInteger(expenseClaimEntryDTOmap, "employeeId", errors, false);
+        requestValidations.validatePositiveInteger(expenseClaimEntryDTOmap, "typeId", errors, false);
+        if(errors.size() > 0) {
+            throw new InvalidRequestDataException("Validation Error", errors);
+        }
+        Integer employeeId = (Integer)expenseClaimEntryDTOmap.get("employeeId");
+        Integer typeId = (Integer)expenseClaimEntryDTOmap.get("typeId");
         return expenseClaimEntryRepository.findAllClaimEntriesByEmployeeIdAndType(employeeId, typeId)
                 .stream()
                 .map(expenseClaimEntryMapper::toExpenseClaimEntryDTO)
@@ -92,6 +125,19 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
     @Override
     public List<TypeSumDTO> findTypeSumByAllTypes() {
         return expenseClaimEntryRepository.getTotalGroupedByType();
+    }
+
+    @Override
+    public List<ExpenseClaimEntryDTO> findEntriesByExpenseClaimId(int expenseClaimId){
+        return expenseClaimEntryRepository.findByExpenseClaimId(expenseClaimId)
+                .stream()
+                .map(expenseClaimEntryMapper::toExpenseClaimEntryDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SumByEmployeeDTO> getSumByEmployees(){
+        return expenseClaimEntryRepository.getTotalExpenseClaimsByEmployeeId();
     }
 
 //    @Override

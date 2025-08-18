@@ -38,8 +38,7 @@ public class Employee {
     private String address;
 
     @NotNull
-    @NotBlank(message = "department id must be provided")
     @Column(name="department_id", nullable = false)
-    private Integer department_id;
+    private Integer departmentId;
 
 }

@@ -39,7 +39,7 @@ public class BaseServiceImpl implements BaseService {
             if (field != null && field.getType().equals(BigDecimal.class) && v instanceof Double)
                 v = BigDecimal.valueOf(((Double) v).doubleValue());
             if (field.getType().equals(LocalDate.class) && v instanceof String) {
-                v = LocalDate.parse((String) v, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+                v = LocalDate.parse((String) v, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             }
 
             if (k.equals("suffix") && v != null) {

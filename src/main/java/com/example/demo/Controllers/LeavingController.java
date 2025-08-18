@@ -52,32 +52,18 @@ public class LeavingController {
 
     @PostMapping("/employee/{id}/in-range")
     public List<LeavingDTO> inRangeLeaving(@PathVariable int id, @RequestBody Map<String,Object> leavingDTOmap) throws ParseException {
-        Object from = leavingDTOmap.get("from");
-        Object to = leavingDTOmap.get("to");
-        LocalDate fromDate = null, toDate = null;
-        if(from != null)
-        {
-            fromDate = LocalDate.parse(from.toString(), DateTimeFormatter.ISO_LOCAL_DATE);
-        }
-        if(to != null)
-        {
-            toDate = LocalDate.parse(to.toString(), DateTimeFormatter.ISO_LOCAL_DATE);
-        }
-        return leavingService.getLeavingByEmployeeAndDatesBetween(id, fromDate, toDate);
+
+        return leavingService.getLeavingByEmployeeAndDatesBetween(id, leavingDTOmap);
     }
 
     @PostMapping("/leaveType/{typeId}")
     public Page<LeavingDTO> leavingByLeaveType(@PathVariable int typeId, @RequestBody Map<String,Object> pageMap) throws ParseException {
-        Integer pageNumber = Integer.parseInt(pageMap.getOrDefault("pageNumber",0).toString());
-        Integer pageSize = Integer.parseInt(pageMap.getOrDefault("pageSize",10).toString());
-        return leavingService.getLeavingByLeaveType(typeId,pageNumber,pageSize);
+        return leavingService.getLeavingByLeaveType(typeId, pageMap);
     }
 
     @PostMapping("/employee/{employeeId}")
     public Page<LeavingDTO> leavingByEmployee(@PathVariable int employeeId, @RequestBody Map<String,Object> pageMap) throws ParseException {
-        Integer pageNumber = Integer.parseInt(pageMap.getOrDefault("pageNumber",0).toString());
-        Integer pageSize = Integer.parseInt(pageMap.getOrDefault("pageSize",10).toString());
-        return leavingService.getLeavingByEmployeeId(employeeId,pageNumber,pageSize);
+        return leavingService.getLeavingByEmployeeId(employeeId, pageMap);
     }
 
 

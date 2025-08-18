@@ -8,5 +8,5 @@ public class EmployeeDTO {
     private String name;
     private String email;
     private String address;
-    private Integer department_id;
+    private Integer departmentId;
 }

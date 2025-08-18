@@ -11,5 +11,5 @@ public interface EmployeeService {
     int createEmployee(Map<String,Object> employeeDTOmap);
     void updateEmployee(Map<String,Object> employeeDTO, int id);
     void deleteEmployee(int id);
-    List<EmployeeDTO> getEmployeesByDepartmentName(String name);
+    List<EmployeeDTO> getEmployeesByDepartmentId(int departmentId);
 }

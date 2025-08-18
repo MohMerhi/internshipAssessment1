@@ -69,9 +69,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        String name = ex.getName(); // The name of the parameter (e.g., "id")
-        String requiredType = ex.getRequiredType().getSimpleName(); // The expected type (e.g., "Long")
-        Object value = ex.getValue(); // The actual invalid value provided (e.g., "abc")
+        String name = ex.getName();
+        String requiredType = ex.getRequiredType().getSimpleName();
+        Object value = ex.getValue();
 
         String message = String.format("The parameter '%s' must be a valid '%s'. You provided: '%s'",
                 name, requiredType, value.getClass().getSimpleName());
@@ -85,6 +85,8 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+
 
 
 

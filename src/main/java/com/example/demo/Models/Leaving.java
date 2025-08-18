@@ -28,7 +28,7 @@ public class Leaving {
     private LocalDate startDate;
 
     @ColumnDefault("`start_date` + interval `number_of_days` - 1 day")
-    @Column(name = "end_date")
+    @Column(name = "end_date", insertable = false, updatable = false)
     private LocalDate endDate;
 
     @NotNull

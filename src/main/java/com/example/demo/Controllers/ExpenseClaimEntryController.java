@@ -1,6 +1,7 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.DTOs.ExpenseClaimEntryDTO;
+import com.example.demo.DTOs.SumByEmployeeDTO;
 import com.example.demo.DTOs.TypeSumDTO;
 import com.example.demo.Repositories.ExpenseClaimEntryRepository;
 import com.example.demo.Services.ExpenseClaimEntryService;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/expenseClaimEntrys")
+@RequestMapping("/api/expenseClaimEntries")
 public class ExpenseClaimEntryController {
     private final ExpenseClaimEntryService expenseClaimEntryService;
 
@@ -23,8 +24,8 @@ public class ExpenseClaimEntryController {
 
 
     @GetMapping
-    public List<ExpenseClaimEntryDTO> getAllExpenseClaimEntrys() {
-        return expenseClaimEntryService.getAllExpenseClaimEntrys();
+    public List<ExpenseClaimEntryDTO> getAllExpenseClaimEntries() {
+        return expenseClaimEntryService.getAllExpenseClaimEntries();
     }
 
     @PostMapping("/create-expenseClaimEntry")
@@ -45,15 +46,19 @@ public class ExpenseClaimEntryController {
 
     @PostMapping ("/type/employee")
     public List<ExpenseClaimEntryDTO> getExpenseClaimEntryByEmployeeAndType(@RequestBody Map<String,Object> expenseClaimEntryDTOmap) {
-        Integer employeeId = (Integer) expenseClaimEntryDTOmap.get("employeeId");
-        Integer typeId = (Integer) expenseClaimEntryDTOmap.get("typeId");
-        return expenseClaimEntryService.findByEmployeeAndByType(employeeId,typeId);
+        return expenseClaimEntryService.findByEmployeeAndByType(expenseClaimEntryDTOmap);
     }
 
     @GetMapping("/sum-by-type")
     public List<TypeSumDTO> getSumByType(){
         return expenseClaimEntryService.findTypeSumByAllTypes();
     }
+
+    @GetMapping("/sum-by-employee")
+    public List<SumByEmployeeDTO> getSumByEmployee(){
+        return expenseClaimEntryService.getSumByEmployees();
+    }
+
 
 //    @GetMapping("/employee/{employeeId}")
 //    public List<ExpenseClaimEntryDTO> getExpenseClaimEntryByEmployeeId(@PathVariable int employeeId) {

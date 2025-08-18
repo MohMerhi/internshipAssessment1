@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
-    @Query("SELECT e FROM Employee e, Department d WHERE e.department_id = d.id AND d.name = :deptName")
+    @Query("SELECT e FROM Employee e, Department d WHERE e.departmentId = d.id AND d.name = :deptName")
     List<Employee> findByDepartmentName(@Param("deptName") String departmentName);
+
+    List<Employee> findByDepartmentId(Integer departmentId);
 }
