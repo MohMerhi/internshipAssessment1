@@ -15,5 +15,7 @@ public class ExpenseClaimDTO {
     private BigDecimal total;
     private String status;
     private Integer employeeId;
+    private String employeeName;
     private List<ExpenseClaimEntryDTO> expenseClaimEntries;
+
 }

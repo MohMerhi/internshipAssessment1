@@ -1,9 +1,12 @@
 package com.example.demo.Services;
 
 
+import com.example.demo.DTOs.DepartmentDTO;
 import com.example.demo.DTOs.EmployeeDTO;
 import com.example.demo.DTOs.EmployeeMapper;
+import com.example.demo.Models.Department;
 import com.example.demo.Models.Employee;
+import com.example.demo.Repositories.DepartmentRepository;
 import com.example.demo.Repositories.EmployeeRepository;
 import com.example.demo.exceptions.InvalidRequestDataException;
 import com.example.demo.exceptions.RequestValidations;
@@ -23,17 +26,31 @@ public class EmployeeServiceImpl implements EmployeeService{
     private final EmployeeMapper employeeMapper;
     private final BaseService baseService;
     private final RequestValidations requestValidations;
+    private final DepartmentRepository departmentRepository;
 
     public List<EmployeeDTO> getAllEmployees() {
         return employeeRepository.findAll()
                 .stream()
-                .map(employeeMapper::toEmployeeDTO)
+                .map(emp ->{
+                    EmployeeDTO dto = employeeMapper.toEmployeeDTO(emp);
+                    Department department = departmentRepository.findById(emp.getDepartmentId()).orElse(null);
+                    if(department != null){
+                        dto.setDepartmentName(department.getName());
+                    }
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 
     public EmployeeDTO getEmployeeById(int id) {
         Employee employee = employeeRepository.findById(id).orElse(null);
-        return employeeMapper.toEmployeeDTO(employee);
+        EmployeeDTO dto =  employeeMapper.toEmployeeDTO(employee);
+        Department department = departmentRepository.findById(employee.getDepartmentId()).orElse(null);
+        if(department != null){
+            dto.setDepartmentName(department.getName());
+        }
+        return dto;
+
     }
     public int createEmployee(Map<String,Object> employeeDTOmap) {
         List<String> errors = new ArrayList<>();

@@ -106,9 +106,23 @@ public class RequestValidations {
     public void ValidatePositiveDouble(Map<String,Object> DTOmap, String numberName, List<String> errors) {
         if (DTOmap.containsKey(numberName)) {
             Object number = DTOmap.get(numberName);
-            if(number != null && number.getClass() == Double.class){
-                if((Double) number <= 0){
+            if(number != null && (number.getClass() == Double.class || number.getClass() == Integer.class) ){
+                if( ((Number) number).doubleValue() <= 0){
                     errors.add(numberName + " should be positive");
+                }
+
+                DTOmap.put(numberName, ((Number) number).doubleValue());
+            }
+            else if (number != null && number.getClass() == String.class){
+                try{
+                    number = Double.parseDouble((String) number);
+                    DTOmap.put(numberName, number);
+                    if((Double) number <= 0){
+                        errors.add(numberName + " should be positive");
+                    }
+                }
+                catch (Exception e){
+                    errors.add(numberName + " should be a Double");
                 }
             }
             else {

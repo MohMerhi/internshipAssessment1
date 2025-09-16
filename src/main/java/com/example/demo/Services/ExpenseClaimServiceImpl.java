@@ -29,6 +29,7 @@ public class ExpenseClaimServiceImpl implements ExpenseClaimService{
     private final BaseService baseService;
     private final RequestValidations requestValidations;
     private final ExpenseClaimEntryService expenseClaimEntryService;
+    private final EmployeeService employeeService;
 
     public List<ExpenseClaimDTO> getAllExpenseClaims() {
         List<ExpenseClaimDTO> expenseClaimDTOS = expenseClaimRepository.findAll()
@@ -37,6 +38,7 @@ public class ExpenseClaimServiceImpl implements ExpenseClaimService{
                 .collect(Collectors.toList());
         for(ExpenseClaimDTO expense: expenseClaimDTOS){
             expense.setExpenseClaimEntries(expenseClaimEntryService.findEntriesByExpenseClaimId(expense.getId()));
+            expense.setEmployeeName(employeeService.getEmployeeById(expense.getEmployeeId()).getName());
         }
         return expenseClaimDTOS;
     }
@@ -45,6 +47,7 @@ public class ExpenseClaimServiceImpl implements ExpenseClaimService{
         ExpenseClaim expenseClaim = expenseClaimRepository.findById(id).orElse(null);
         ExpenseClaimDTO expenseClaimDTO =  expenseClaimMapper.toExpenseClaimDTO(expenseClaim);
         expenseClaimDTO.setExpenseClaimEntries(expenseClaimEntryService.findEntriesByExpenseClaimId(expenseClaim.getId()));
+        expenseClaimDTO.setEmployeeName(employeeService.getEmployeeById(expenseClaim.getEmployeeId()).getName());
         return expenseClaimDTO;
     }
     public int createExpenseClaim(Map<String,Object> expenseClaimDTOmap) {
@@ -76,6 +79,8 @@ public class ExpenseClaimServiceImpl implements ExpenseClaimService{
         baseService.updateEntity(expenseClaimDTOmap,expenseClaim,ExpenseClaim.class);
         expenseClaim.setId(id);
         expenseClaimRepository.save(expenseClaim);
+        BigDecimal total = expenseClaimEntryRepository.getTotalExpenseClaim(expenseClaim.getId());
+        expenseClaimEntryRepository.updateTotalExpenseClaim(expenseClaim.getId(), total);
 
     }
     public void deleteExpenseClaim(int id) {

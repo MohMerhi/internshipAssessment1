@@ -11,6 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/leaveTypes")
 public class LeaveTypeController {
     private final LeaveTypeService leaveTypeService;

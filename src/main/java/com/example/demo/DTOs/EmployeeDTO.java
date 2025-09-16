@@ -9,4 +9,5 @@ public class EmployeeDTO {
     private String email;
     private String address;
     private Integer departmentId;
+    private String departmentName;
 }

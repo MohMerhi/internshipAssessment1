@@ -1,11 +1,9 @@
 package com.example.demo.Services;
 
 
-import com.example.demo.DTOs.ExpenseClaimEntryDTO;
-import com.example.demo.DTOs.ExpenseClaimEntryMapper;
-import com.example.demo.DTOs.SumByEmployeeDTO;
-import com.example.demo.DTOs.TypeSumDTO;
+import com.example.demo.DTOs.*;
 import com.example.demo.Models.ExpenseClaimEntry;
+import com.example.demo.Models.ExpenseType;
 import com.example.demo.Repositories.ExpenseClaimEntryRepository;
 import com.example.demo.Repositories.ExpenseClaimRepository;
 import com.example.demo.Repositories.ExpenseTypeRepository;
@@ -31,18 +29,27 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
     private final BaseService baseService;
     private final ExpenseClaimRepository expenseClaimRepository;
     private final ExpenseTypeRepository expenseTypeRepository;
+    private final ExpenseTypeService expenseTypeService;
     private final RequestValidations requestValidations;
 
     public List<ExpenseClaimEntryDTO> getAllExpenseClaimEntries() {
         return expenseClaimEntryRepository.findAll()
                 .stream()
-                .map(expenseClaimEntryMapper::toExpenseClaimEntryDTO)
+                .map(expenseClaimEntry -> {
+                    ExpenseClaimEntryDTO expenseClaimEntryDTO = expenseClaimEntryMapper.toExpenseClaimEntryDTO(expenseClaimEntry);
+                    ExpenseTypeDTO expenseTypeDTO = expenseTypeService.getExpenseTypeById(expenseClaimEntryDTO.getExpenseTypeId());
+                    expenseClaimEntryDTO.setExpenseTypeName(expenseTypeDTO.getName());
+                    return expenseClaimEntryDTO;
+                })
                 .collect(Collectors.toList());
     }
 
     public ExpenseClaimEntryDTO getExpenseClaimEntryById(int id) {
         ExpenseClaimEntry expenseClaimEntry = expenseClaimEntryRepository.findById(id).orElse(null);
-        return expenseClaimEntryMapper.toExpenseClaimEntryDTO(expenseClaimEntry);
+        ExpenseClaimEntryDTO expenseClaimEntryDTO = expenseClaimEntryMapper.toExpenseClaimEntryDTO(expenseClaimEntry);
+        ExpenseTypeDTO expenseTypeDTO = expenseTypeService.getExpenseTypeById(expenseClaimEntryDTO.getExpenseTypeId());
+        expenseClaimEntryDTO.setExpenseTypeName(expenseTypeDTO.getName());
+        return expenseClaimEntryDTO;
     }
     public int createExpenseClaimEntry(Map<String,Object> expenseClaimEntryDTOmap) {
         List<String> errors = new ArrayList<>();
@@ -118,7 +125,12 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
         Integer typeId = (Integer)expenseClaimEntryDTOmap.get("typeId");
         return expenseClaimEntryRepository.findAllClaimEntriesByEmployeeIdAndType(employeeId, typeId)
                 .stream()
-                .map(expenseClaimEntryMapper::toExpenseClaimEntryDTO)
+                .map(expenseClaimEntry -> {
+                    ExpenseClaimEntryDTO expenseClaimEntryDTO = expenseClaimEntryMapper.toExpenseClaimEntryDTO(expenseClaimEntry);
+                    ExpenseTypeDTO expenseTypeDTO = expenseTypeService.getExpenseTypeById(expenseClaimEntryDTO.getExpenseTypeId());
+                    expenseClaimEntryDTO.setExpenseTypeName(expenseTypeDTO.getName());
+                    return expenseClaimEntryDTO;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -131,7 +143,12 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService{
     public List<ExpenseClaimEntryDTO> findEntriesByExpenseClaimId(int expenseClaimId){
         return expenseClaimEntryRepository.findByExpenseClaimId(expenseClaimId)
                 .stream()
-                .map(expenseClaimEntryMapper::toExpenseClaimEntryDTO)
+                .map(expenseClaimEntry -> {
+                    ExpenseClaimEntryDTO expenseClaimEntryDTO = expenseClaimEntryMapper.toExpenseClaimEntryDTO(expenseClaimEntry);
+                    ExpenseTypeDTO expenseTypeDTO = expenseTypeService.getExpenseTypeById(expenseClaimEntryDTO.getExpenseTypeId());
+                    expenseClaimEntryDTO.setExpenseTypeName(expenseTypeDTO.getName());
+                    return expenseClaimEntryDTO;
+                })
                 .collect(Collectors.toList());
     }
 

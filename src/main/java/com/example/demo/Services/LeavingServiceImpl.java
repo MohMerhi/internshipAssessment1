@@ -1,8 +1,12 @@
 package com.example.demo.Services;
 
 
+import com.example.demo.DTOs.EmployeeDTO;
+import com.example.demo.DTOs.LeaveTypeDTO;
 import com.example.demo.DTOs.LeavingDTO;
 import com.example.demo.DTOs.LeavingMapper;
+import com.example.demo.Models.Employee;
+import com.example.demo.Models.LeaveType;
 import com.example.demo.Models.Leaving;
 import com.example.demo.Repositories.LeavingRepository;
 import com.example.demo.exceptions.InvalidRequestDataException;
@@ -29,19 +33,34 @@ public class LeavingServiceImpl implements LeavingService{
     private final LeavingRepository leavingRepository;
     private final LeavingMapper leavingMapper;
     private final BaseService baseService;
+    private final LeaveTypeService leaveTypeService;
     private final RequestValidations requestValidations;
+    private final EmployeeService employeeService;
     private final View error;
+
 
     public List<LeavingDTO> getAllLeavings() {
         return leavingRepository.findAll()
                 .stream()
-                .map(leavingMapper::toLeavingDTO)
+                .map(leaving->{
+                    LeavingDTO leavingDTO = leavingMapper.toLeavingDTO(leaving);
+                    LeaveTypeDTO leaveTypeDTO = leaveTypeService.getLeaveTypeById(leaving.getLeaveTypeId());
+                    leavingDTO.setLeaveTypeName(leaveTypeDTO.getName());
+                    EmployeeDTO employeeDTO = employeeService.getEmployeeById(leaving.getEmployeeId());
+                    leavingDTO.setEmployeeName(employeeDTO.getName());
+                    return leavingDTO;
+                })
                 .collect(Collectors.toList());
     }
 
     public LeavingDTO getLeavingById(int id) {
         Leaving leaving = leavingRepository.findById(id).orElse(null);
-        return leavingMapper.toLeavingDTO(leaving);
+        LeavingDTO leavingDTO = leavingMapper.toLeavingDTO(leaving);
+        LeaveTypeDTO leaveTypeDTO = leaveTypeService.getLeaveTypeById(leaving.getLeaveTypeId());
+        leavingDTO.setLeaveTypeName(leaveTypeDTO.getName());
+        EmployeeDTO employeeDTO = employeeService.getEmployeeById(leaving.getEmployeeId());
+        leavingDTO.setEmployeeName(employeeDTO.getName());
+        return leavingDTO;
     }
     public int createLeaving(Map<String,Object> leavingDTOmap) {
         List<String> errors = new ArrayList<>();
@@ -92,7 +111,14 @@ public class LeavingServiceImpl implements LeavingService{
         Integer size = Integer.parseInt(pageMap.getOrDefault("pageSize",10).toString());
         Pageable pageable =  PageRequest.of(page, size);
         return leavingRepository.findByEmployeeId(employeeId, pageable)
-                .map(leavingMapper::toLeavingDTO);
+                .map(leaving->{
+                    LeavingDTO leavingDTO = leavingMapper.toLeavingDTO(leaving);
+                    LeaveTypeDTO leaveTypeDTO = leaveTypeService.getLeaveTypeById(leaving.getLeaveTypeId());
+                    leavingDTO.setLeaveTypeName(leaveTypeDTO.getName());
+                    EmployeeDTO employeeDTO = employeeService.getEmployeeById(leaving.getEmployeeId());
+                    leavingDTO.setEmployeeName(employeeDTO.getName());
+                    return leavingDTO;
+                });
     }
 
     @Override
@@ -129,7 +155,14 @@ public class LeavingServiceImpl implements LeavingService{
         }
         return  leavingList
                 .stream()
-                .map(leavingMapper::toLeavingDTO)
+                .map(leaving->{
+                    LeavingDTO leavingDTO = leavingMapper.toLeavingDTO(leaving);
+                    LeaveTypeDTO leaveTypeDTO = leaveTypeService.getLeaveTypeById(leaving.getLeaveTypeId());
+                    leavingDTO.setLeaveTypeName(leaveTypeDTO.getName());
+                    EmployeeDTO employeeDTO = employeeService.getEmployeeById(leaving.getEmployeeId());
+                    leavingDTO.setEmployeeName(employeeDTO.getName());
+                    return leavingDTO;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -145,6 +178,13 @@ public class LeavingServiceImpl implements LeavingService{
         Integer size = Integer.parseInt(pageMap.getOrDefault("pageSize",10).toString());
         Pageable pageable =  PageRequest.of(page, size);
         return leavingRepository.findByLeaveTypeId(leaveType, pageable)
-                .map(leavingMapper::toLeavingDTO);
+                .map(leaving->{
+                    LeavingDTO leavingDTO = leavingMapper.toLeavingDTO(leaving);
+                    LeaveTypeDTO leaveTypeDTO = leaveTypeService.getLeaveTypeById(leaving.getLeaveTypeId());
+                    leavingDTO.setLeaveTypeName(leaveTypeDTO.getName());
+                    EmployeeDTO employeeDTO = employeeService.getEmployeeById(leaving.getEmployeeId());
+                    leavingDTO.setEmployeeName(employeeDTO.getName());
+                    return leavingDTO;
+                });
     }
 }

@@ -8,10 +8,12 @@ import java.time.LocalDate;
 public class LeavingDTO {
     private int id;
     private Integer leaveTypeId;
+    private String leaveTypeName;
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer numberOfDays;
     private String note;
     private Integer employeeId;
+    private String employeeName;
 
 }

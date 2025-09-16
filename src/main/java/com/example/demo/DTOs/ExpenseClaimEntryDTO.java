@@ -10,7 +10,10 @@ public class ExpenseClaimEntryDTO {
     private Integer id;
     private LocalDate date;
     private Integer expenseTypeId;
+    private String expenseTypeName;
     private Integer expenseClaimId;
     private String description;
     private BigDecimal total;
+
+
 }
